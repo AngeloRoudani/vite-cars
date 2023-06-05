@@ -1,58 +1,50 @@
 <script>
 import axios from "axios";
-import ProjectCard from '../components/ProjectCard.vue';
+import AppCar from '../components/AppCar.vue';
 
 export default {
-    name: 'ProjectList',
+    name: 'CarList',
     components: {
-    ProjectCard,
+    AppCar,
 },
     data() {
         return {
             baseUrl: 'http://localhost:8000',
-            projects: [],
-            currentPage: 1,
-            lastPage: null
+            cars: [],
+           
         }
     },
     methods: {
-        getProjects(gotoPage) {
-            axios.get(`${this.store.baseUrl}/api/projects`,
+        getCars() {
+            axios.get(`${this.baseUrl}/api/cars`,
                 {
                     params :{
-                        page: gotoPage
+                       
                     }
                 }
             )
             .then(response => {
                 console.log(response);
-                this.projects = response.data.results.data;
-                this.currentPage = response.data.results.current_page;
-                this.lastPage = response.data.results.last_page;
+                this.cars = response.data.results;
+                
             });
            
         }
     },
     mounted() {
-        this.getProjects(1);
+        this.getCars();
     }
 }
 </script>
 
 <template>
 <div class="container">
-    <h2 class="text-center">Elenco dei progetti</h2>
+    <h2 class="text-center">Elenco delle macchine</h2>
     <div class="row ">
-        <div class="col-4" v-for="project in projects">
-            <ProjectCard :project="project"  :key="project.id" />
+        <div class="col-4" v-for="car in cars">
+            <AppCar :car="car"  :key="car.id" />
         </div>
-        <nav aria-label="Page navigation example py-4 ">
-        <ul class="pagination d-flex justify-content-center">
-            <li class="page-item"><button class="page-link" @click="getProjects(currentPage - 1)" :class="{'disabled' : currentPage == 1}">Previous</button></li>
-            <li class="page-item" v-for="page in lastPage" :class="{'active' : page==currentPage}"><button class="page-link" @click="getProjects(page)">{{ page }}</button></li>
-            <li class="page-item"><button class="page-link" @click="getProjects(currentPage +1)" :class="{'disabled' : currentPage == lastPage}">Next</button></li>
-        </ul>
-    </nav>
+        
     </div>
    
        
